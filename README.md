@@ -1,6 +1,6 @@
 # PDF Summarizer with DOI Detection and CSV Export
 
-This project extracts text from research PDFs, detects DOI links, summarizes the content using a transformer-based NLP model (`distilBART`), and exports the results into a structured CSV file.
+This code extracts text from research PDFs, detects DOI links, summarizes the content using a transformer-based NLP model (`distilBART`), and exports the results into a structured CSV file.
 
 ---
 
