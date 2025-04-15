@@ -6,7 +6,7 @@ import csv
 import argparse
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-nltk.download('punkt')
+nltk.download('punkt_tab')
 
 # Load model/tokenizer once
 checkpoint = "sshleifer/distilbart-cnn-12-6"
