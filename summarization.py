@@ -92,7 +92,7 @@ def main(pdf_dir):
         except Exception as e:
             print(f"Error summarizing {pdf_path}: {e}")
 
-    # ✅ Export to CSV
+    #  Export to CSV
     with open("summarized_papers.csv", "w", newline='', encoding="utf-8") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["Folder Name", "DOI Link", "Summary"])
@@ -103,7 +103,7 @@ def main(pdf_dir):
             summary = content["Summary"]
             writer.writerow([folder_name, doi_link, summary])
 
-    print("\n✅ All summaries written to summarized_papers.csv")
+    print("\n All summaries written to summarized_papers.csv")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
