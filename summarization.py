@@ -104,6 +104,12 @@ def main(pdf_dir):
             writer.writerow([folder_name, doi_link, summary])
 
     print("\n All summaries written to summarized_papers.csv")
+    
+# Function to summarize papers from a directory and save results to a CSV
+def summarize_papers(pdf_dir, output_csv="summarized_papers.csv"):
+    main(pdf_dir)  # Calls the main function with the provided directory
+    print(f"Summaries saved in {output_csv}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
