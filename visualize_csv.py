@@ -3,7 +3,7 @@
 import pandas as pd
 from IPython.display import display, HTML
 
-def show_summary_table(csv_path):
+def visualize_csv(csv_path):
     # Load your CSV
     df = pd.read_csv(csv_path)
 
