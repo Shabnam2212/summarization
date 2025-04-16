@@ -3,59 +3,51 @@
 import pandas as pd
 from IPython.display import display, HTML
 
-def visualize_csv(csv_file_path):
-    try:
-        # Load the CSV
-        df = pd.read_csv(csv_file_path)
+# Load your CSV
+df = pd.read_csv("summarized_papers.csv")
 
-        # Make DOI clickable (only if column exists)
-        if 'DOI Link' in df.columns:
-            df['DOI Link'] = df['DOI Link'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>' if pd.notna(x) else '')
+# Clean up any literal '\n' or newline characters
+for col in ['Folder Name', 'DOI Link', 'Summary']:
+    df[col] = df[col].astype(str)
+    df[col] = df[col].str.replace(r'\\n', ' ', regex=True)    # Handles '\\n'
+    df[col] = df[col].str.replace(r'\n', ' ', regex=True)     # Handles '\n'
+    df[col] = df[col].str.replace(r'\\\\n', ' ', regex=True)  # Handles '\\\\n'
+    df[col] = df[col].str.strip()
 
-        # Convert to HTML
-        html_table = df.to_html(escape=False, index=False, classes="custom-table")
+# Pre-process the summary for safe insertion (replace newlines with <br> before the f-string)
+df['SummaryHTML'] = df['Summary'].apply(lambda x: x.replace('\n', '<br>'))
 
-        # CSS styles
-        clean_css = """
-        <style>
-        .custom-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid #ccc;
-            table-layout: fixed;
-            word-wrap: break-word;
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-        }
+# Combine content into one cell with proper formatting and line breaks
+df['Combined'] = df.apply(lambda row: (
+    "<div style='font-family: Arial, sans-serif; font-size: 15px; line-height: 1.5; text-align: left;'>"
+    f"<strong>PMCID:</strong> {row['Folder Name']}<br>"
+    f"<strong>DOI:</strong> <a href='{row['DOI Link']}' target='_blank'>{row['DOI Link']}</a><br>"
+    "<details>"
+    "<summary style='margin-top: 4px;'>Click to view summary</summary>"
+    f"<div style='margin-top: 5px;'>{row['SummaryHTML']}</div>"
+    "</details></div>"
+), axis=1)
 
-        .custom-table th, .custom-table td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-            white-space: normal;
-        }
+# HTML output with styling
+html_output = df[['Combined']].to_html(escape=False, index=False, header=False)
 
-        .custom-table th:nth-child(1), .custom-table td:nth-child(1) {
-            width: 7.5%;
-        }
+# Add styling for left alignment
+custom_style = """
+<style>
+table {
+    border-collapse: collapse;
+    width: 80%;
+    font-family: Arial, sans-serif;
+    text-align: left;
+}
+td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    vertical-align: top;
+    text-align: left;
+}
+</style>
+"""
 
-        .custom-table th:nth-child(2), .custom-table td:nth-child(2) {
-            width: 16%;
-        }
-
-        .custom-table th:nth-child(3), .custom-table td:nth-child(3) {
-            width: 80%;
-        }
-
-        .custom-table th {
-            background-color: #f2f2f2;
-        }
-        </style>
-        """
-
-        # Display
-        display(HTML(clean_css + html_table))
-
-    except Exception as e:
-        print(f"[Error] Could not visualize the CSV: {e}")
+# Display the final HTML
+display(HTML(custom_style + html_output))
